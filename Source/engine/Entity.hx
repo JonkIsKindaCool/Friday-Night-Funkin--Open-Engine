@@ -24,7 +24,7 @@ class Entity {
 		onRender.dispatch();
 	}
 
-	public function addComponent(c:Component):Void {
+	public function addComponent(c:Component) {
 		var name = Type.getClassName(Type.getClass(c));
 
 		if (components.exists(name))
@@ -44,7 +44,7 @@ class Entity {
 		return cast comp;
 	}
 
-	public function removeComponent(c:Class<Component>):Void {
+	public function removeComponent(c:Class<Component>) {
 		var name = Type.getClassName(c);
 		if (components.exists(name)) {
 			var comp:Component = components.get(name);

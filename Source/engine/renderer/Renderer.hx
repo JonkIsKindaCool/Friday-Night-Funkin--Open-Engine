@@ -1,5 +1,7 @@
 package engine.renderer;
 
+import lime.math.Vector4;
+import engine.utils.Color;
 import engine.utils.UV;
 import lime.math.Vector2;
 import lime.math.Rectangle;
@@ -20,9 +22,11 @@ class Renderer {
 		_buffer = gl.createBuffer();
 	}
 
-	public static function renderFrame(texture:Texture, frame:Rectangle, matrix:Matrix4) {
+	public static function renderFrame(texture:Texture, frame:Rectangle, matrix:Matrix4, camera:Camera, ?color:Color = 0xFFFFFF) {
 		_textureShader.activate();
 		_textureShader.setMatrix4('model', matrix);
+		_textureShader.setMatrix4('view', camera.getView());
+		_textureShader.setVec4('color', new Vector4(color.rFloat, color.gFloat, color.bFloat, color.aFloat));
 		texture.activate();
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, _buffer);
@@ -51,9 +55,11 @@ class Renderer {
 		_textureShader.deactivate();
 	}
 
-	public static function renderImage(texture:Texture, matrix:Matrix4) {
+	public static function renderImage(texture:Texture, matrix:Matrix4, camera:Camera, ?color:Color = 0xFFFFFF) {
 		_textureShader.activate();
 		_textureShader.setMatrix4('model', matrix);
+		_textureShader.setMatrix4('view', camera.matrix);
+		_textureShader.setVec4('color', new Vector4(color.rFloat, color.gFloat, color.bFloat, color.aFloat));
 		texture.activate();
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, _buffer);

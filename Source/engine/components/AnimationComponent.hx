@@ -1,5 +1,6 @@
 package engine.components;
 
+import engine.core.Engine;
 import lime.math.Matrix3;
 import lime.math.Rectangle;
 import engine.renderer.Renderer;
@@ -76,6 +77,8 @@ class AnimationComponent extends Component {
 		var scale:Vector2 = parent.hasComponent(TransformComponent) ? parent.getComponent(TransformComponent).scale : new Vector2(1, 1);
 		var rotation:Float = parent.hasComponent(TransformComponent) ? parent.getComponent(TransformComponent).rotation : 0;
 
+		var camera:Camera = Engine.currentScene.camera;
+
 		var pivotX = frame.rect.width * 0.5;
 		var pivotY = frame.rect.height * 0.5;
 
@@ -86,6 +89,6 @@ class AnimationComponent extends Component {
 		MatrixUtils.scale(matrix, scale.x, scale.y);
 		MatrixUtils.rotateAround(matrix, pivotX, pivotY, rotation);
 
-		Renderer.renderFrame(_texture, frame.rect.clone(), matrix);
+		Renderer.renderFrame(_texture, frame.rect.clone(), matrix, camera);
 	}
 }

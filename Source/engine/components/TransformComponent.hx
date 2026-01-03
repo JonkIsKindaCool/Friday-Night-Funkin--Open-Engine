@@ -1,5 +1,6 @@
 package engine.components;
 
+import engine.core.Engine;
 import lime.math.Vector2;
 
 class TransformComponent extends Component {
@@ -9,6 +10,7 @@ class TransformComponent extends Component {
 
     public function new(parent:Entity, ?x:Float = 0, ?y:Float = 0) {
         super(parent);
+
         position = new Vector2(x, y);
         scale = new Vector2(1, 1);
         rotation = 0;

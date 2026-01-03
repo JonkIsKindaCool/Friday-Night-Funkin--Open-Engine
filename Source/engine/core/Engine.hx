@@ -14,7 +14,7 @@ import lime.app.Application;
 
 class Engine extends Application {
 	public static var initialized:Bool = false;
-	public static var view:Matrix4 = new Matrix4();
+	public static var projection:Matrix4 = new Matrix4();
 	public static var gl(get, never):OpenGLES3RenderContext;
 
 	public static var designWidth:Int = 1280;
@@ -45,7 +45,7 @@ class Engine extends Application {
 		currentScene = new TitleScene();
 	}
 
-	private function updateLetterbox(winW:Int, winH:Int):Void {
+	private function updateLetterbox(winW:Int, winH:Int) {
 		var aspectDesign:Float = designWidth / designHeight;
 		var aspectWindow:Float = winW / winH;
 
@@ -64,7 +64,7 @@ class Engine extends Application {
 
 		gl.viewport(vpX, vpY, vpW, vpH);
 
-		view.createOrtho(0, designWidth, designHeight, 0, -1000, 1000);
+		projection.createOrtho(0, designWidth, designHeight, 0, -1000, 1000);
 	}
 
 	override function onWindowResize(width:Int, height:Int) {
@@ -102,5 +102,9 @@ class Engine extends Application {
 
 	private static function get_gl():OpenGLES3RenderContext {
 		return Application.current.window.context.gl;
+	}
+
+	override function onWindowClose() {
+		super.onWindowClose();
 	}
 }

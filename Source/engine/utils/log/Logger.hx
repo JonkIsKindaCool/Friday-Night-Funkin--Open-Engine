@@ -45,7 +45,7 @@ class Logger {
 		return '${cls}.${method}:${infos.lineNumber}';
 	}
 
-	public static function log(msg:Dynamic, level:Level = INFO, ?pos:PosInfos):Void {
+	public static function log(msg:Dynamic, level:Level = INFO, ?pos:PosInfos) {
 		final time:String = formatTime();
 		final color:String = getLevelColor(level);
 		final reset:String = Ansi.Reset;
@@ -78,7 +78,7 @@ class Logger {
 	public static inline function fatal(v:Dynamic, ?pos:PosInfos)
 		log(v, FATAL, pos);
 
-	public static function println(msg:Dynamic):Void {
+	public static function println(msg:Dynamic) {
 		#if sys
 		Sys.println(msg);
 		#elseif js
