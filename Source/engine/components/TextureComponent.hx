@@ -39,4 +39,9 @@ class TextureComponent extends Component {
 
         Renderer.renderImage(_texture, matrix, camera);
 	}
+
+	override function destroy() {
+		super.destroy();
+		AssetsCache.destroyImage(_texture);
+	}
 }

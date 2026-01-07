@@ -42,4 +42,18 @@ class AssetsCache {
 		
 		return buffer;
 	}
+
+	public static function destroyImage(t:Texture) {
+		for (tex in _imagesCache)
+			if (t == tex)
+				t.destroy();
+	}
+
+	public static function destroy() {
+		for (sound in _soundCache)
+			AL.deleteBuffer(sound);
+
+		for (image in _imagesCache)
+			image.destroy();
+	}
 }

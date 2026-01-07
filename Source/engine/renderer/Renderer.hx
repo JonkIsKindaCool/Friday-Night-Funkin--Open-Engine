@@ -51,7 +51,8 @@ class Renderer {
 
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+		gl.bindBuffer(gl.ARRAY_BUFFER, 0);
+		texture.deactivate();
 		_textureShader.deactivate();
 	}
 
@@ -82,6 +83,12 @@ class Renderer {
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+		texture.deactivate();
 		_textureShader.deactivate();
+	}
+
+	public static function exit() {
+		_textureShader.destroy();
+		gl.deleteBuffer(_buffer);
 	}
 }

@@ -1,5 +1,7 @@
 package engine.components;
 
+import haxe.ds.StringMap;
+import engine.animations.AnimationManager;
 import engine.core.Engine;
 import lime.math.Matrix3;
 import lime.math.Rectangle;
@@ -17,61 +19,53 @@ using StringTools;
 
 class AnimationComponent extends Component {
 	private var _texture:Texture;
-	private var _frames:Map<String, Frame>;
-	private var _animations:Map<String, Animation>;
+	private var manager:AnimationManager;
 
-	private var animationIndex:Float = 0;
-	private var currentAnimation:Animation;
+	public var flipX:Bool = false;
+	public var animOffsets:StringMap<Vector2> = new StringMap();
+	public var animationNames:Array<String>;
+	public var currentAnimationName:String;
+
+	private var animOffset:Vector2 = new Vector2();
 
 	public function new(parent:Entity, path:String, frames:Map<String, Frame>) {
 		super(parent);
 		_texture = AssetsCache.cacheImage(path);
-
-		_frames = frames;
-		_animations = new Map();
-		currentAnimation = {
-			frames: [
-				{
-					rect: new Rectangle(0, 0, _texture.width, _texture.height),
-					offset: new Vector2(0, 0)
-				}
-			],
-			framerate: 1
-		}
-
-		_animations.set('__default__', currentAnimation);
+		manager = new AnimationManager(_texture, frames);
+		animationNames = [];
 	}
 
-	public function addAnimationByPrefix(name:String, prefix:String, framerate:Float) {
-		var frames:Array<Frame> = [];
-		for (k => v in _frames) {
-			if (k.startsWith(prefix)) {
-				frames.push(v);
-			}
-		}
-
-		_animations.set(name, {
-			framerate: framerate,
-			frames: frames
-		});
+	public function addAnimationByPrefix(name:String, prefix:String, framerate:Float, ?loop:Bool, ?offset:Vector2) {
+		manager.addAnimationByPrefix(name, prefix, framerate, loop);
+		animationNames.push(name);
+		animOffsets.set(name, offset ?? new Vector2());
 	}
 
-	public function playAnimation(name:String) {
-		currentAnimation = _animations.get(name);
+	public function addAnimationByIndices(name:String, prefix:String, indices:Array<Int>, framerate:Float, ?loop:Bool, ?offset:Vector2) {
+		manager.addAnimationByIndices(name, prefix, indices, framerate, loop);
+		animationNames.push(name);
+		animOffsets.set(name, offset ?? new Vector2());
+	}
+
+	public function playAnimation(name:String, ?force:Bool = true) {
+		manager.playAnimation(name, force);
+		animOffset = animOffsets.get(name);
+		currentAnimationName = name;
+	}
+
+	public inline function hasAnimation(n:String) {
+		return animationNames.contains(n);
 	}
 
 	override function update(dt:Float) {
 		super.update(dt);
-		animationIndex += dt * currentAnimation.framerate;
-
-		if (animationIndex >= currentAnimation.frames.length)
-			animationIndex = 0;
+		manager.update(dt);
 	}
 
 	override function render() {
 		super.render();
 
-		var frame:Frame = currentAnimation.frames[Math.floor(animationIndex % currentAnimation.frames.length)];
+		var frame:Frame = manager.currentAnimation.frames[Math.floor(manager.animationIndex % manager.currentAnimation.frames.length)];
 
 		var pos:Vector2 = parent.hasComponent(TransformComponent) ? parent.getComponent(TransformComponent).position : new Vector2();
 		var scale:Vector2 = parent.hasComponent(TransformComponent) ? parent.getComponent(TransformComponent).scale : new Vector2(1, 1);
@@ -85,10 +79,15 @@ class AnimationComponent extends Component {
 		var matrix:Matrix4 = new Matrix4();
 		matrix.identity();
 
-		MatrixUtils.translate(matrix, pos.x - frame.offset.x, pos.y - frame.offset.y);
-		MatrixUtils.scale(matrix, scale.x, scale.y);
+		MatrixUtils.translate(matrix, pos.x - frame.offset.x + animOffset.x, pos.y - frame.offset.y + animOffset.y);
+		MatrixUtils.scale(matrix, scale.x * (flipX ? -1 : 1), scale.y);
 		MatrixUtils.rotateAround(matrix, pivotX, pivotY, rotation);
 
 		Renderer.renderFrame(_texture, frame.rect.clone(), matrix, camera);
+	}
+
+	override function destroy() {
+		super.destroy();
+		AssetsCache.destroyImage(_texture);
 	}
 }

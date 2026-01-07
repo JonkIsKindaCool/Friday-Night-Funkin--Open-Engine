@@ -17,4 +17,8 @@ class Group extends Entity{
     public function remove(m:Entity) {
         group.remove(m);
     }
+
+    override function destroy() {
+        super.destroy();
+    }
 }

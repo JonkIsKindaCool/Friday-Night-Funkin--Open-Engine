@@ -11,10 +11,19 @@ class FramesGenerator {
 
 		var xml:Xml = Xml.parse(content).firstElement();
 		for (element in xml.elementsNamed('SubTexture')) {
+			var x:Float = Std.parseFloat(element.get('x'));
+			var y:Float = Std.parseFloat(element.get('y'));
+			var width:Float = Std.parseFloat(element.get('width'));
+			var height:Float = Std.parseFloat(element.get('height'));
+
+			var frameXAttr:String = element.get('frameX');
+			var frameYAttr:String = element.get('frameY');
+			var offsetX:Float = (frameXAttr != null) ? Std.parseFloat(frameXAttr) : 0;
+			var offsetY:Float = (frameYAttr != null) ? Std.parseFloat(frameYAttr) : 0;
+
 			var frame:Frame = {
-				rect: new Rectangle(Std.parseFloat(element.get('x')), Std.parseFloat(element.get('y')), Std.parseFloat(element.get('width')),
-					Std.parseFloat(element.get('height'))),
-                offset: new Vector2(Std.parseFloat(element.get('frameX')), Std.parseFloat(element.get('frameY')))
+				rect: new Rectangle(x, y, width, height),
+				offset: new Vector2(offsetX, offsetY)
 			}
 			frames.set(element.get('name'), frame);
 		}

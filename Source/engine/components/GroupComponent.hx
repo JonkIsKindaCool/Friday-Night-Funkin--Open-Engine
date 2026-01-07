@@ -25,4 +25,11 @@ class GroupComponent extends Component {
         super.update(dt);
         for (m in members) m.update(dt);
     }
+
+    override function destroy() {
+        super.destroy();
+        for (m in members){
+            m.destroy();
+        }
+    }
 }

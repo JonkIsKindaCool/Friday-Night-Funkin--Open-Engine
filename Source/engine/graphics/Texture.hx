@@ -31,6 +31,10 @@ class Texture {
 		gl.bindTexture(gl.TEXTURE_2D, glTexture);
 	}
 
+	public function deactivate() {
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	}
+
 	public function destroy() {
 		gl.deleteTexture(glTexture);
 	}

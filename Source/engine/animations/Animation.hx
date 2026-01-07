@@ -4,5 +4,6 @@ import engine.animations.Frame;
 
 typedef Animation = {
     frames:Array<Frame>,
-    framerate:Float
+    framerate:Float,
+    loop:Bool
 }

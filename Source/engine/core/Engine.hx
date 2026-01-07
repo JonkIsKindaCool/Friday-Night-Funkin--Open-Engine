@@ -1,5 +1,8 @@
 package engine.core;
 
+import engine.backend.AssetsCache;
+import lime.ui.KeyCode;
+import lime.ui.KeyModifier;
 import engine.backend.AudioSystem;
 import game.scenes.TitleScene;
 import engine.Scene;
@@ -33,9 +36,10 @@ class Engine extends Application {
 		gl.enable(gl.TEXTURE_2D);
 		gl.enable(gl.BLEND);
 
-		gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
 		Renderer.init();
+		InputSystem.init();
 		AudioSystem.init();
 
 		trace('${Ansi.BrightCyan}Open Engine${Ansi.Reset} Initialized');
@@ -80,8 +84,12 @@ class Engine extends Application {
 		if (!initialized)
 			return;
 
+		AudioSystem.update(deltaTime / 1000);
+
 		if (currentScene != null)
 			currentScene.update(deltaTime / 1000.0);
+
+		InputSystem.update();
 	}
 
 	override function render(context:RenderContext) {
@@ -106,5 +114,9 @@ class Engine extends Application {
 
 	override function onWindowClose() {
 		super.onWindowClose();
+		AudioSystem.exit();
+		AssetsCache.destroy();
+		Renderer.exit();
+		trace('${Ansi.BrightCyan}Open Engine${Ansi.Reset} Closed');
 	}
 }

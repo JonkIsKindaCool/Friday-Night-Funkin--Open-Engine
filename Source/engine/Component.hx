@@ -11,4 +11,8 @@ class Component {
 	public function update(dt:Float) {}
 
 	public function render() {}
+
+	public function destroy() {
+		
+	}
 }

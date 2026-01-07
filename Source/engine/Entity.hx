@@ -24,6 +24,14 @@ class Entity {
 		onRender.dispatch();
 	}
 
+	public function destroy() {
+		for (comp in components) {
+			onUpdate.remove(comp.update);
+			onRender.remove(comp.render);
+			comp.destroy();
+		}
+	}
+
 	public function addComponent(c:Component) {
 		var name = Type.getClassName(Type.getClass(c));
 
