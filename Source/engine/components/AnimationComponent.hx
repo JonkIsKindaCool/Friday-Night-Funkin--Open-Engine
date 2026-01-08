@@ -71,7 +71,7 @@ class AnimationComponent extends Component {
 		var scale:Vector2 = parent.hasComponent(TransformComponent) ? parent.getComponent(TransformComponent).scale : new Vector2(1, 1);
 		var rotation:Float = parent.hasComponent(TransformComponent) ? parent.getComponent(TransformComponent).rotation : 0;
 
-		var camera:Camera = Engine.currentScene.camera;
+		var camera:Camera = Engine.camera;
 
 		var pivotX = frame.rect.width * 0.5;
 		var pivotY = frame.rect.height * 0.5;
@@ -88,6 +88,5 @@ class AnimationComponent extends Component {
 
 	override function destroy() {
 		super.destroy();
-		AssetsCache.destroyImage(_texture);
 	}
 }

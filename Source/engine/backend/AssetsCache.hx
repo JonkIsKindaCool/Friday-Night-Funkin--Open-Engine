@@ -1,5 +1,6 @@
 package engine.backend;
 
+import haxe.ds.StringMap;
 import haxe.Log;
 import lime.media.AudioBuffer;
 import lime.media.openal.AL;
@@ -8,8 +9,8 @@ import lime.graphics.opengl.GLBuffer;
 import engine.graphics.Texture;
 
 class AssetsCache {
-	private static final _imagesCache:Map<String, Texture> = new Map<String, Texture>();
-	private static final _soundCache:Map<String, ALBuffer> = new Map<String, ALBuffer>();
+	private static var _imagesCache:Map<String, Texture> = new Map<String, Texture>();
+	private static var _soundCache:Map<String, ALBuffer> = new Map<String, ALBuffer>();
 
 	public static function cacheImage(path:String):Texture {
 		if (_imagesCache.exists(path))
@@ -44,9 +45,12 @@ class AssetsCache {
 	}
 
 	public static function destroyImage(t:Texture) {
-		for (tex in _imagesCache)
-			if (t == tex)
+		for (name => tex in _imagesCache)
+			if (t == tex){
 				t.destroy();
+				_imagesCache.remove(name);
+				break;
+			}
 	}
 
 	public static function destroy() {
@@ -55,5 +59,8 @@ class AssetsCache {
 
 		for (image in _imagesCache)
 			image.destroy();
+
+		_imagesCache = new StringMap();
+		_soundCache = new StringMap();
 	}
 }

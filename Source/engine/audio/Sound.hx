@@ -26,7 +26,9 @@ class Sound {
 
 		_source = AL.createSource();
 		AL.sourcei(_source, AL.BUFFER, _buffer);
+		
 		volume = 0.8;
+		AL.sourcef(_source, AL.GAIN, volume * AudioSystem.volume);
 
 		AL.sourcePlay(_source);
 	}

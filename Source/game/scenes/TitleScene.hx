@@ -2,17 +2,7 @@ package game.scenes;
 
 import engine.core.Engine;
 import lime.math.Vector2;
-import game.objects.FunkinSprite;
-import game.backend.Conductor;
-import engine.backend.AssetsCache;
-import engine.graphics.Texture;
-import engine.renderer.batch.TextureBatch;
-import engine.utils.Color;
-import engine.Scene;
-import engine.audio.Sound;
-import engine.entities.display.AnimatedSprite;
-import engine.animations.FramesGenerator;
-import engine.entities.display.Sprite;
+import game.entities.FunkinSprite;
 
 class TitleScene extends MusicScene {
 	private var gf:FunkinSprite;
@@ -20,10 +10,11 @@ class TitleScene extends MusicScene {
 	private var titleText:FunkinSprite;
 
 	public function new() {
-		Conductor.init();
 		super();
+	}
 
-		Conductor.loadSong('assets/music/freakyMenu.ogg', 102);
+	override function create() {
+		super.create();
 
 		gf = new FunkinSprite(Engine.designWidth * 0.4, Engine.designHeight * 0.07, 'assets/images/titlestate/gfDanceTitle', SPARROW);
 		gf.addAnimationByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], 24, new Vector2());
@@ -41,5 +32,11 @@ class TitleScene extends MusicScene {
 		titleText.addAnimationByPrefix('press', "ENTER PRESSED", 24, new Vector2());
 		titleText.playAnimation('start');
 		add(titleText);
+	}
+	
+	override function update(dt:Float) {
+		super.update(dt);
+		if (InputSystem.getJustPressed(RETURN))
+			Game.changeScene(new MainMenuScene());
 	}
 }

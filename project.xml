@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="Hello World" package="org.openfl.lime.samples.helloworld" version="1.0.0" company="OpenFL" />
+	<meta title="Friday Night Funkin' Open Engine" package="org.jonk.FnfOE" version="1.0.0" company="jonkiskindacool" />
 	<window width="1280" height="720" background="#000000" fps="120" />
-	<app main="engine.core.Engine" path="Export" file="HelloWorld" />
+	<app main="engine.core.Engine" path="Export" file="OpenEngine" />
 	
 	<source path="Source" />
 	

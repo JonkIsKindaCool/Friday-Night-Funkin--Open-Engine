@@ -1,4 +1,4 @@
-package game.objects;
+package game.entities;
 
 import lime.math.Vector2;
 import game.backend.Conductor;

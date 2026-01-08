@@ -1,5 +1,7 @@
 package engine.core;
 
+import engine.backend.SaveSystem;
+import game.Game;
 import engine.backend.AssetsCache;
 import lime.ui.KeyCode;
 import lime.ui.KeyModifier;
@@ -19,11 +21,12 @@ class Engine extends Application {
 	public static var initialized:Bool = false;
 	public static var projection:Matrix4 = new Matrix4();
 	public static var gl(get, never):OpenGLES3RenderContext;
+	public static var camera:Camera;
 
 	public static var designWidth:Int = 1280;
 	public static var designHeight:Int = 720;
 
-	public static var currentScene:Scene;
+	public static var canvas:Entity;
 
 	public function new() {
 		super();
@@ -38,6 +41,9 @@ class Engine extends Application {
 
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
+		camera = new Camera();
+		SaveSystem.init();
+
 		Renderer.init();
 		InputSystem.init();
 		AudioSystem.init();
@@ -46,7 +52,7 @@ class Engine extends Application {
 
 		updateLetterbox(window.width, window.height);
 
-		currentScene = new TitleScene();
+		canvas = new Game();
 	}
 
 	private function updateLetterbox(winW:Int, winH:Int) {
@@ -86,8 +92,8 @@ class Engine extends Application {
 
 		AudioSystem.update(deltaTime / 1000);
 
-		if (currentScene != null)
-			currentScene.update(deltaTime / 1000.0);
+		if (canvas != null)
+			canvas.update(deltaTime / 1000.0);
 
 		InputSystem.update();
 	}
@@ -104,8 +110,8 @@ class Engine extends Application {
 		gl.clearColor(0.0, 0.0, 0.0, 1.0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
-		if (currentScene != null)
-			currentScene.render();
+		if (canvas != null)
+			canvas.render();
 	}
 
 	private static function get_gl():OpenGLES3RenderContext {
@@ -117,6 +123,9 @@ class Engine extends Application {
 		AudioSystem.exit();
 		AssetsCache.destroy();
 		Renderer.exit();
+
+		if (canvas != null)
+			canvas.destroy();
 		trace('${Ansi.BrightCyan}Open Engine${Ansi.Reset} Closed');
 	}
 }

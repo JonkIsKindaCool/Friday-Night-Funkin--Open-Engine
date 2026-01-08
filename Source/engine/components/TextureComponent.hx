@@ -25,7 +25,7 @@ class TextureComponent extends Component {
 		var scale:Vector2 = (parent.hasComponent(TransformComponent) ? parent.getComponent(TransformComponent).scale : new Vector2(1, 1));
         var rotation:Float = (parent.hasComponent(TransformComponent) ? parent.getComponent(TransformComponent).rotation : 0);
 		
-        var camera:Camera =  Engine.currentScene.camera;
+        var camera:Camera =  Engine.camera;
 
 		var pivotX:Float = _texture.width * 0.5;
 		var pivotY:Float = _texture.height * 0.5;
@@ -42,6 +42,5 @@ class TextureComponent extends Component {
 
 	override function destroy() {
 		super.destroy();
-		AssetsCache.destroyImage(_texture);
 	}
 }

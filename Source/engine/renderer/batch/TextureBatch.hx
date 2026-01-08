@@ -18,9 +18,9 @@ class TextureBatch {
 	private var dataIndex:Int = 0;
 	private var vertexCount:Int = 0;
 
-	static inline var FLOATS_PER_SPRITE = 16;
+	static inline var FLOATS_PER_SPRITE = 24;
 
-	public function new(?MAX_ELEMENTS:Int = 10000) {
+	public function new(?MAX_ELEMENTS:Int = 1000) {
 		max_elements = MAX_ELEMENTS;
 		_shader = new Shader('assets/shaders/default/batch_texture.vert', 'assets/shaders/default/batch_texture.frag');
 
@@ -52,36 +52,49 @@ class TextureBatch {
 		srcW = srcW == null ? _currentTexture.width : srcW;
 		srcH = srcH == null ? _currentTexture.height : srcH;
 
-		final u1 = srcX / _currentTexture.width, v1 = srcY / _currentTexture.height;
-		final u2 = (srcX + srcW) / _currentTexture.width, v2 = (srcY + srcH) / _currentTexture.height;
-		final idx = dataIndex;
+		final u1:Float = srcX / _currentTexture.width, v1 = srcY / _currentTexture.height;
+		final u2:Float = (srcX + srcW) / _currentTexture.width, v2 = (srcY + srcH) / _currentTexture.height;
+		var idx:Int = dataIndex;
 
-		vertexData[idx + 0] = x;
-		vertexData[idx + 1] = y;
-		vertexData[idx + 2] = u1;
-		vertexData[idx + 3] = v1;
-		vertexData[idx + 4] = x;
-		vertexData[idx + 5] = y + srcH;
-		vertexData[idx + 6] = u1;
-		vertexData[idx + 7] = v2;
-		vertexData[idx + 8] = x + srcW;
-		vertexData[idx + 9] = y;
-		vertexData[idx + 10] = u2;
-		vertexData[idx + 11] = v1;
-		vertexData[idx + 12] = x + srcW;
-		vertexData[idx + 13] = y + srcH;
-		vertexData[idx + 14] = u2;
-		vertexData[idx + 15] = v2;
+		vertexData[idx++] = x;
+		vertexData[idx++] = y;
+		vertexData[idx++] = u1;
+		vertexData[idx++] = v1;
+
+		vertexData[idx++] = x;
+		vertexData[idx++] = y + srcH;
+		vertexData[idx++] = u1;
+		vertexData[idx++] = v2;
+
+		vertexData[idx++] = x + srcW;
+		vertexData[idx++] = y;
+		vertexData[idx++] = u2;
+		vertexData[idx++] = v1;
+
+		vertexData[idx++] = x + srcW;
+		vertexData[idx++] = y;
+		vertexData[idx++] = u2;
+		vertexData[idx++] = v1;
+
+		vertexData[idx++] = x;
+		vertexData[idx++] = y + srcH;
+		vertexData[idx++] = u1;
+		vertexData[idx++] = v2;
+
+		vertexData[idx++] = x + srcW;
+		vertexData[idx++] = y + srcH;
+		vertexData[idx++] = u2;
+		vertexData[idx++] = v2;
 
 		dataIndex += FLOATS_PER_SPRITE;
-		vertexCount += 4;
+		vertexCount += 6;
 	}
 
 	public function flush() {
 		if (dataIndex == 0)
 			return;
 		_shader.activate();
-		_shader.setMatrix4('view', Engine.currentScene.camera.getView());
+		_shader.setMatrix4('view', Engine.camera.getView());
 		_currentTexture.activate();
 		gl.bindBuffer(gl.ARRAY_BUFFER, _buffer);
 
@@ -92,7 +105,7 @@ class TextureBatch {
 		gl.enableVertexAttribArray(1);
 
 		gl.bufferSubData(gl.ARRAY_BUFFER, 0, dataIndex * Float32Array.BYTES_PER_ELEMENT, vertexData);
-		gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertexCount);
+		gl.drawArrays(gl.TRIANGLES, 0, vertexCount);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 		_shader.deactivate();
 		dataIndex = 0;

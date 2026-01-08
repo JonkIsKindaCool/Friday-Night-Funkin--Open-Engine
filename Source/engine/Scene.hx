@@ -9,4 +9,8 @@ class Scene extends Group {
         camera = new Camera();
         super();
     }
+
+    public function create() {
+        
+    }
 }
